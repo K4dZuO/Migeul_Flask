@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Hello, {{ args.name }}!</h1>
+<p>Your {{args.add_info.color_eyes}} eyes are beauty and you {{args.add_info.color_hair}} hair is too wonderful!</p>
+
+<p>Last posts</p>
+{% if posts is not none %}
+    {% for post in posts %}
+    <div>
+        <p><b>Author:</b> {{post.author.username}}</p>
+        <p><b>Post:</b> {{post.body}}</p>
+        <br>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>There're no any posts yet.</p>
+{% endif %}    
+{% endblock %}
