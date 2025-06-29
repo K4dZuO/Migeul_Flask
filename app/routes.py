@@ -1,11 +1,14 @@
-from flask import render_template, redirect, flash, url_for
+from flask import Blueprint, render_template, redirect, flash, url_for
 
 from app.enums import HttpMethod
-from app import app
 from app.forms import LoginForm
 
-@app.route('/', methods=[HttpMethod.GET])
-@app.route('/index', methods=[HttpMethod.GET])
+
+bp = Blueprint('main', __name__)
+
+
+@bp.route('/', methods=[HttpMethod.GET])
+@bp.route('/index', methods=[HttpMethod.GET])
 def index():
     args = {"name": "Maxim",
             "title": "Greetings page",
@@ -30,15 +33,15 @@ def index():
     ]
     return render_template("index.html", args = args, posts=posts)
 
-@app.route("/login", methods=[HttpMethod.GET, HttpMethod.POST])
+@bp.route("/login", methods=[HttpMethod.GET, HttpMethod.POST])
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
         flash(f"Login requested: {login_form.username.data}")
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
     return render_template("login.html", title="Sign in", form=login_form)
 
-@app.route("/secret", methods=[HttpMethod.GET])
+@bp.route("/secret", methods=[HttpMethod.GET])
 def secret():
     return render_template("secret.html")
 
