@@ -37,7 +37,8 @@ def index():
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
-        flash(f"Login requested: {login_form.username.data}")
+        flash(f"""Login requested: {login_form.username.data}
+Remember: {login_form.remember_me.data}""")
         return redirect(url_for("main.index"))
     return render_template("login.html", title="Sign in", form=login_form)
 
