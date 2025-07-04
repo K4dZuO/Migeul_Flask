@@ -15,7 +15,6 @@ def make_shell_context():
 def create_db(app):
     with app.app_context():
         db.create_all()
-        print("Database tables created successfully.")
 
 if not path.exists(Config.SQLALCHEMY_DATABASE_URI):
     create_db(app)

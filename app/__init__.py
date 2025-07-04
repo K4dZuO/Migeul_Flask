@@ -9,6 +9,7 @@ from config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
+login.login_view = 'main.login'
 
 def create_app():
     app = Flask(__name__)

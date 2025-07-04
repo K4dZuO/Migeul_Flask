@@ -4,13 +4,12 @@
 
 <p>Last posts</p>
 {% if posts is not none %}
-    {% for post in posts %}
     <div>
-        <p><b>Author:</b> {{post.author.username}}</p>
-        <p><b>Post:</b> {{post.body}}</p>
-        <br>
+        <h1>Hi, {{ current_user.username }}!</h1>
+        {% for post in posts %}
+        <div><p><b>{{ post.author.username }}</b> says: {{ post.body }}</p></div>
+        {% endfor %}
     </div>
-    {% endfor %}
 {% else %}
     <p>There're no any posts yet.</p>
 {% endif %}    
