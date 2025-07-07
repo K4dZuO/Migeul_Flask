@@ -5,7 +5,7 @@ from urllib.parse import urlsplit
 
 from app.enums import HttpMethod
 from app.forms import LoginForm, RegistrationForm
-from app.models import User, AnonymousUser
+from app.models import User, Post, Comment
 from app import db
 
 bp = Blueprint('main', __name__)
@@ -15,10 +15,6 @@ bp = Blueprint('main', __name__)
 @bp.route('/index', methods=[HttpMethod.GET])
 @login_required
 def index():
-    args = {"title": "Greetings page",
-            "user": {
-                "is_authenticated": current_user.is_authenticated}}
-    
     posts = [
         {
             'author': {'username': 'John'},
@@ -33,7 +29,7 @@ def index():
             'body': 'New AI agent make people too anxient! How\'s it going?'
         }
     ]
-    return render_template("index.html", args = args, posts=posts)
+    return render_template("index.html", title = "Home", posts=posts)
 
 
 @bp.route('/register', methods=[HttpMethod.GET, HttpMethod.POST])
@@ -78,6 +74,27 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+@bp.route('/user/<username>')
+@login_required
+def user_profile(username):
+    asked_user = db.session.scalar(sa.select(User).where(User.username==username))
+    print(asked_user)
+    if asked_user:
+        posts = db.session.scalars(sa.select(Post).where(Post.user_id == asked_user.id)).all()
+        comments = db.session.scalars(sa.select(Comment).where(Comment.user_id == asked_user.id)).all()
+    else:
+        posts = None
+        comments = None
+        
+    args = {
+        "raw_username": username,
+        "user": asked_user,
+        "posts": posts,
+        "comments": comments
+        }
+        
+    return render_template('user.html', args=args)
 
 
 @bp.route("/secret", methods=[HttpMethod.GET])

@@ -11,11 +11,3 @@ app = create_app()
 @app.shell_context_processor
 def make_shell_context():
     return {'sa': sa, 'so': so, 'db': db, 'User': User, 'Post': Post}
-
-def create_db(app):
-    with app.app_context():
-        db.create_all()
-
-if not path.exists(Config.SQLALCHEMY_DATABASE_URI):
-    create_db(app)
-    

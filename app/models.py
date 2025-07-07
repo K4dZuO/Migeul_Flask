@@ -19,6 +19,8 @@ class User(UserMixin, db.Model):
                                              index = True,
                                              unique=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
+    added_at: so.Mapped[datetime] = so.mapped_column(index=True,
+                                                      default=lambda: datetime.now(timezone.utc))
     
     posts: so.WriteOnlyMapped['Post'] = so.relationship(back_populates='author')
     comments: so.WriteOnlyMapped['Comment'] = so.relationship(back_populates='author')
@@ -76,5 +78,4 @@ class Comment(db.Model):
     replies: so.Mapped[List['Comment']] = so.relationship(back_populates='reply_comment')
     
     def __repr__(self):
-        return f"""Author: {self.author.username}
-Comment: {self.body}"""
+        return f"""Author: {self.author.username}\nComment: {self.body}"""
