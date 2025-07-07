@@ -2,12 +2,12 @@
 
 
 {% block content%}
-{% if args.user %}
-    <p>The page of user <b>{{args.user.username}}</b></p>
-
+{% if user %}
+    <p>The page of user <b>{{user.username}}.</b></p>
+    <p>Registration date: <input type="date" value={{ user.added_at }} readonly /></p>
     <h3>Posts</h3>
-    {% if args.posts %}
-    {% for post in args.posts %}
+    {% if posts %}
+    {% for post in posts %}
         <div class="unit">{{post}}</div><br />
         {% endfor%}
     {% else %}
@@ -15,14 +15,14 @@
     {% endif %}
     
     <h3>Comments</h3>
-    {% if args.comments %}
-    {% for comment in args.comments %}
+    {% if comments %}
+    {% for comment in comments %}
         <div class="unit">{{comment}}</div><br />
         {% endfor%}
     {% else %}
         <p>This user haven't published any comments yet.    
     {% endif %}
 {% else %}
-    <div>There's no user with name <b>{{args.raw_username}}</b></div>
+    <div>There's no user with name <b>{{raw_username}}</b></div>
 {% endif%}
 {% endblock%}

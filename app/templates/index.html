@@ -4,11 +4,11 @@
 {% block content %}
 
 <p>Last posts</p>
+<h1>Hi, {{ current_user.username }}!</h1>
 {% if posts is not none %}
     <div>
-        <h1>Hi, {{ current_user.username }}!</h1>
         {% for post in posts %}
-        <div><p><b>{{ post.author.username }}</b> says: {{ post.body }}</p></div>
+        <div><p><b><a href="{{url_for('main.user_profile', username=current_user.username)}}" style="text-decoration:none; color: black;">{{ post.author.username }}</a></b> says: {{ post.body }}</p></div>
         {% endfor %}
     </div>
 {% else %}

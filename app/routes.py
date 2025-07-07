@@ -46,10 +46,7 @@ def register():
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('main.login'))
-    args = {"title": "Registration Page",
-            "user": {
-                "is_authenticated": current_user.is_authenticated}}
-    return render_template("register.html", form=register_form, args=args)
+    return render_template("register.html", form=register_form, title="Registration page")
 
 @bp.route("/login", methods=[HttpMethod.GET, HttpMethod.POST])
 def login():
@@ -79,7 +76,6 @@ def logout():
 @login_required
 def user_profile(username):
     asked_user = db.session.scalar(sa.select(User).where(User.username==username))
-    print(asked_user)
     if asked_user:
         posts = db.session.scalars(sa.select(Post).where(Post.user_id == asked_user.id)).all()
         comments = db.session.scalars(sa.select(Comment).where(Comment.user_id == asked_user.id)).all()
@@ -93,8 +89,7 @@ def user_profile(username):
         "posts": posts,
         "comments": comments
         }
-        
-    return render_template('user.html', args=args)
+    return render_template('user.html', title="User Page", **args)
 
 
 @bp.route("/secret", methods=[HttpMethod.GET])
