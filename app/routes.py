@@ -75,7 +75,7 @@ def logout():
 @bp.route('/user/<username>')
 @login_required
 def user_profile(username):
-    asked_user = db.session.scalar(sa.select(User).where(User.username==username))
+    asked_user = db.first_or_404(sa.select(User).where(User.username==username))
     if asked_user:
         posts = db.session.scalars(sa.select(Post).where(Post.user_id == asked_user.id)).all()
         comments = db.session.scalars(sa.select(Comment).where(Comment.user_id == asked_user.id)).all()
