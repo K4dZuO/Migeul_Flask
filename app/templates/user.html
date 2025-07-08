@@ -4,7 +4,13 @@
 {% block content%}
 {% if user %}
     <p>The page of user <b>{{user.username}}.</b></p>
-    <p>Registration date: <input type="date" value={{ user.added_at }} readonly /></p>
+    <table>
+        <tr valign="top">
+            <tr><img src="{{ user.avatar(250) }}"></tr>
+            <tr><h1>User: {{ user.username }}</h1></tr>
+            <tr>Registration date: <input type="date" value={{ user.added_at }} readonly /></tr>
+        </tr>
+    </table>
     <h3>Posts</h3>
     {% if posts %}
     {% for post in posts %}

@@ -6,6 +6,22 @@ span {
     color: red;
 }
 
-div.unit {
-    white-space: pre;
+.post.section{
+    margin: 0 auto;
+    padding: 0 auto;
+    display: inline-block;
+}
+
+.post.unit{
+    border: solid black 2px;
+}
+
+.post.content{
+    align-items: center;
+    display: flex;
+}
+
+p.date.date {
+    color: green;
+    margin: 0 auto;
 }

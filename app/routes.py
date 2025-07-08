@@ -15,20 +15,7 @@ bp = Blueprint('main', __name__)
 @bp.route('/index', methods=[HttpMethod.GET])
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        },
-        {
-            "author": {'username': "Gregory"},
-            'body': 'New AI agent make people too anxient! How\'s it going?'
-        }
-    ]
+    posts = db.session.scalars(sa.select(Post).order_by(sa.desc(Post.added_at))).all()
     return render_template("index.html", title = "Home", posts=posts)
 
 

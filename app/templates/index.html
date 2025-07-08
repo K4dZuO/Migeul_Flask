@@ -5,12 +5,24 @@
 
 <p>Last posts</p>
 <h1>Hi, {{ current_user.username }}!</h1>
-{% if posts is not none %}
-    <div>
-        {% for post in posts %}
-        <div><p><b><a href="{{url_for('main.user_profile', username=current_user.username)}}" style="text-decoration:none; color: black;">{{ post.author.username }}</a></b> says: {{ post.body }}</p></div>
-        {% endfor %}
+{% if posts %}
+<div class='post section'>
+    {% for post in posts %}
+    <div class='post unit'>
+        <div class='post content'>
+            <a href="{{url_for('main.user_profile', username=post.author.username)}}">
+                <img src={{post.author.avatar(30)}} />
+            </a>
+            <p>
+                <b><a href="{{url_for('main.user_profile', username=current_user.username)}}" 
+                    style="text-decoration:none; color: black;">
+                    {{ post.author.username }}</a></b>: {{ post.body }}
+            </p>
+        </div>
+        <p class='post date'>Posted at {{ post.added_at.strftime('%d-%m-%Y %H:%M') }}</p>
     </div>
+    {% endfor %}
+</div>
 {% else %}
     <p>There're no any posts yet.</p>
 {% endif %}    
