@@ -5,12 +5,12 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 from app.enums import HttpMethod
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, ProfileForm
 from app.models import User, Post, Comment
 from app import db
 
-bp = Blueprint('main', __name__)
 
+bp = Blueprint('main', __name__)
 
 
 @bp.before_request
@@ -18,6 +18,7 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.now(timezone.utc)
         db.session.commit()
+
 
 @bp.route('/', methods=[HttpMethod.GET])
 @bp.route('/index', methods=[HttpMethod.GET])
@@ -43,6 +44,7 @@ def register():
         return redirect(url_for('main.login'))
     return render_template("register.html", form=register_form, title="Registration page")
 
+
 @bp.route("/login", methods=[HttpMethod.GET, HttpMethod.POST])
 def login():
     if current_user.is_authenticated:
@@ -66,6 +68,22 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+@bp.route('/edit_profile', methods=[HttpMethod.GET, HttpMethod.POST])
+@login_required
+def edit_profile():
+    profile_form = ProfileForm()
+    if profile_form.validate_on_submit():
+        current_user.username = profile_form.username.data
+        current_user.about = profile_form.about.data
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('main.user_profile', username=current_user.username))
+    elif request.method == HttpMethod.GET:
+        profile_form.username.data = current_user.username
+        profile_form.about.data = current_user.about
+    return render_template("edit_profile.html", title="Edit Profile", form = profile_form)
+
 
 @bp.route('/user/<username>')
 @login_required

@@ -13,8 +13,12 @@
             {% else %}
                <br><tr>Last seen: No data - {{user.username}} has never logged in.</tr>
             {% endif %}
-
+            <br>
+            {% if current_user.username == user.username %}
+                <a href='{{url_for("main.edit_profile")}}'>Edit profile</a>
+            {% endif%}
     </table>
+
     <h3>Posts</h3>
     {% if posts %}
         {% for post in posts %}
