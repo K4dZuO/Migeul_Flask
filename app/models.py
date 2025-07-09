@@ -20,6 +20,8 @@ class User(UserMixin, db.Model):
                                              index = True,
                                              unique=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
+    about: so.Mapped[Optional[str]] = so.mapped_column(sa.String(200))
+    last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
     added_at: so.Mapped[datetime] = so.mapped_column(index=True,
                                                       default=lambda: datetime.now(timezone.utc))
     

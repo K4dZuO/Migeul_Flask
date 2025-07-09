@@ -5,16 +5,20 @@
 {% if user %}
     <p>The page of user <b>{{user.username}}.</b></p>
     <table>
-        <tr valign="top">
             <tr><img src="{{ user.avatar(250) }}"></tr>
             <tr><h1>User: {{ user.username }}</h1></tr>
             <tr>Registration date: <input type="date" value={{ user.added_at }} readonly /></tr>
-        </tr>
+            {% if user.last_seen %}
+                <br><tr>Last seen: {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</tr>
+            {% else %}
+               <br><tr>Last seen: No data - {{user.username}} has never logged in.</tr>
+            {% endif %}
+
     </table>
     <h3>Posts</h3>
     {% if posts %}
-    {% for post in posts %}
-        <div class="unit">{{post}}</div><br />
+        {% for post in posts %}
+            {% include "_post.html"%}
         {% endfor%}
     {% else %}
         <p>This user haven't published any posts yet.    

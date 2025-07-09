@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, flash, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
+from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 from app.enums import HttpMethod
@@ -10,6 +11,13 @@ from app import db
 
 bp = Blueprint('main', __name__)
 
+
+
+@bp.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.now(timezone.utc)
+        db.session.commit()
 
 @bp.route('/', methods=[HttpMethod.GET])
 @bp.route('/index', methods=[HttpMethod.GET])
