@@ -19,7 +19,9 @@ def create_app():
     migrate.init_app(app, db)
     login.init_app(app)
     
-    from app.routes import bp as main_bp
-    app.register_blueprint(main_bp)
+    from app.routes import bp
+    from app.errors import register_erros
+    register_erros(app) 
+    app.register_blueprint(bp)
 
     return app

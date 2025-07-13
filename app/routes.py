@@ -69,6 +69,7 @@ def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
+
 @bp.route('/edit_profile', methods=[HttpMethod.GET, HttpMethod.POST])
 @login_required
 def edit_profile():
@@ -108,4 +109,3 @@ def user_profile(username):
 @bp.route("/secret", methods=[HttpMethod.GET])
 def secret():
     return render_template("secret.html")
-
