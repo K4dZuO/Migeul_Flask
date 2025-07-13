@@ -5,6 +5,7 @@ import sqlalchemy as sa
 
 from app import db
 from app.models import User
+import app.helpers as helpers
 
 
 class LoginForm(FlaskForm):
@@ -32,7 +33,26 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("Email already exists.")
 
 
-class ProfileForm(FlaskForm):
+class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     about = TextAreaField('About me', validators=[Length(min=0, max=200)])
-    submit = SubmitField('Update')    
+    submit = SubmitField('Update')
+    
+    def __init__(self, original_username, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.original_username = original_username
+        
+    def validate_username(self, username: str):
+        if username.data != self.original_username:
+            user = db.session.scalar(sa.select(User).where(
+                User.username == username.data))
+            if user is not None:
+                raise ValidationError('Please use a different username.')
+    
+    def validate_about(self, about: str):
+        print(about.data)
+        if about.data != "":
+            if helpers.check_profanity(about.data):
+                raise ValidationError('Please, don\'t use censor words.')
+    
+    

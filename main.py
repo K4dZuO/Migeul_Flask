@@ -1,8 +1,6 @@
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from os import path
 
-from config import Config
 from app.models import User, Post
 from app import db, create_app
 

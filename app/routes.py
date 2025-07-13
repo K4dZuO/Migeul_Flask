@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 from app.enums import HttpMethod
-from app.forms import LoginForm, RegistrationForm, ProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm
 from app.models import User, Post, Comment
 from app import db
 
@@ -69,10 +69,11 @@ def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
+
 @bp.route('/edit_profile', methods=[HttpMethod.GET, HttpMethod.POST])
 @login_required
 def edit_profile():
-    profile_form = ProfileForm()
+    profile_form = EditProfileForm(original_username = current_user.username)
     if profile_form.validate_on_submit():
         current_user.username = profile_form.username.data
         current_user.about = profile_form.about.data
@@ -108,4 +109,3 @@ def user_profile(username):
 @bp.route("/secret", methods=[HttpMethod.GET])
 def secret():
     return render_template("secret.html")
-
