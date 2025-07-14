@@ -6,14 +6,24 @@
     <p>The page of user <b>{{user.username}}.</b></p>
     <table>
             <tr><img src="{{ user.avatar(250) }}"></tr>
-            <tr><h1>User: {{ user.username }}</h1></tr>
-            <tr>Registration date: <input type="date" value={{ user.added_at }} readonly /></tr>
-            {% if user.last_seen %}
-                <br><tr>Last seen: {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</tr>
+            <tr><h2>User: {{ user.username }}</h1></tr>
+
+            {% if user.about %}
+                <tr>About me: {{user.about}}</tr>
             {% else %}
-               <br><tr>Last seen: No data - {{user.username}} has never logged in.</tr>
+               <tr>About me: Empty</tr>
             {% endif %}
-            <br>
+            <br />
+
+            <tr>Registration date: <input type="date" value={{ user.added_at }} readonly /></tr>
+            <br />
+
+            {% if user.last_seen %}
+                <tr>Last seen: {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</tr>
+            {% else %}
+               <tr>Last seen: No data - {{user.username}} has never logged in.</tr>
+            {% endif %}
+
             {% if current_user.username == user.username %}
                 <a href='{{url_for("main.edit_profile")}}'>Edit profile</a>
             {% endif%}
