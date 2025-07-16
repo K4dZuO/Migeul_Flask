@@ -56,3 +56,5 @@ class EditProfileForm(FlaskForm):
                 raise ValidationError('Please, don\'t use censor words.')
     
     
+class FollowForm(FlaskForm):
+    submit = SubmitField('Submit')
