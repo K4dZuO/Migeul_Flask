@@ -5,13 +5,23 @@
 
 <p>Last posts</p>
 <h1>Hi, {{ current_user.username }}!</h1>
-{% if posts %}
 <div class='post section'>
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.post.label }}<br>
+        {{ form.post(cols=64, rows=5) }}<br>
+        {% for error in form.post.errors %}
+            <span class="error">[{{ error }}]</span>
+            {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+    </form>
     {% for post in posts %}
-        {% include "_post.html"%}
+    <p>
+            {% include "_post.html"%}
+    </p>
     {% endfor %}
 </div>
-{% else %}
-    <p>There're no any posts yet.</p>
-{% endif %}    
+
 {% endblock %}

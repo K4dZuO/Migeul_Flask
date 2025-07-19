@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 from app.enums import HttpMethod
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, FollowForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, FollowForm, PostForm
 from app.models import User, Post, Comment
 from app import db
 
@@ -20,12 +20,19 @@ def before_request():
         db.session.commit()
 
 
-@bp.route('/', methods=[HttpMethod.GET])
-@bp.route('/index', methods=[HttpMethod.GET])
+@bp.route('/', methods=[HttpMethod.GET, HttpMethod.POST])
+@bp.route('/index', methods=[HttpMethod.GET, HttpMethod.POST])
 @login_required
 def index():
-    posts = db.session.scalars(sa.select(Post).order_by(sa.desc(Post.added_at))).all()
-    return render_template("index.html", title = "Home", posts=posts)
+    post_form = PostForm()
+    if post_form.validate_on_submit():
+        new_post = Post(body=post_form.post.data, author=current_user)
+        db.session.add(new_post)
+        db.session.commit()
+        flash('Your post is now live!')
+        return redirect(url_for('main.index'))
+    posts = db.session.scalars(current_user.following_posts()).all()
+    return render_template("index.html", title = "Home", posts=posts, form=post_form)
 
 
 @bp.route('/register', methods=[HttpMethod.GET, HttpMethod.POST])
