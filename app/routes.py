@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 from app.enums import HttpMethod
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, FollowForm
 from app.models import User, Post, Comment
 from app import db
 
@@ -86,9 +86,52 @@ def edit_profile():
     return render_template("edit_profile.html", title="Edit Profile", form = profile_form)
 
 
+@bp.route('/follow/<username>', methods=[HttpMethod.POST])
+@login_required
+def follow(username):
+    form = FollowForm()
+    if form.validate_on_submit():
+        user = db.session.scalar(
+            sa.select(User).where(User.username == username))
+        if user is None:
+            flash(f'User {username} not found.')
+            return redirect(url_for('main.index'))
+        if user == current_user:
+            flash('You cannot follow yourself!')
+            return redirect(url_for('main.user_profile', username=username))
+        current_user.follow(user)
+        db.session.commit()
+        flash(f'You are following {username}!')
+        return redirect(url_for('main.user_profile', username=username))
+    else:
+        return redirect(url_for('main.index'))
+
+
+@bp.route('/unfollow/<username>', methods=[HttpMethod.POST])
+@login_required
+def unfollow(username):
+    form = FollowForm()
+    if form.validate_on_submit():
+        user = db.session.scalar(
+            sa.select(User).where(User.username == username))
+        if user is None:
+            flash(f'User {username} not found.')
+            return redirect(url_for('main.index'))
+        if user == current_user:
+            flash('You cannot unfollow yourself!')
+            return redirect(url_for('main.user_profile', username=username))
+        current_user.unfollow(user)
+        db.session.commit()
+        flash(f'You are not following {username}.')
+        return redirect(url_for('main.user_profile', username=username))
+    else:
+        return redirect(url_for('main.index'))
+
+
 @bp.route('/user/<username>')
 @login_required
 def user_profile(username):
+    follow_form = FollowForm()
     asked_user = db.first_or_404(sa.select(User).where(User.username==username))
     if asked_user:
         posts = db.session.scalars(sa.select(Post).where(Post.user_id == asked_user.id)).all()
@@ -101,7 +144,8 @@ def user_profile(username):
         "raw_username": username,
         "user": asked_user,
         "posts": posts,
-        "comments": comments
+        "comments": comments,
+        "follow_form": follow_form
         }
     return render_template('user.html', title="User Page", **args)
 
