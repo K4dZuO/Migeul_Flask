@@ -6,7 +6,7 @@
     <p>The page of user <b>{{user.username}}.</b></p>
     <table>
             <tr><img src="{{ user.avatar(250) }}"></tr>
-            <tr><h2>User: {{ user.username }}</h1></tr>
+            <tr><h2>{{ user.username }}</h1></tr>
 
             {% if user.about %}
                 <tr>About me: {{user.about}}</tr>

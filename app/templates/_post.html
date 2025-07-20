@@ -4,9 +4,9 @@
             <img src={{post.author.avatar(30)}} />
         </a>
         <p>
-            <b><a href="{{url_for('main.user_profile', username=current_user.username)}}" 
-                style="text-decoration:none; color: black;">
-                {{ post.author.username }}</a></b>: {{ post.body }}
+            <b><a href="{{url_for('main.user_profile', username=current_user.username)}}">
+                {{ post.author.username }}:</a>
+            </b> {{ post.body }}
         </p>
     </div>
     <p class='post date'>Posted at {{ post.added_at.strftime('%d-%m-%Y %H:%M') }}</p>

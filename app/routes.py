@@ -160,3 +160,17 @@ def user_profile(username):
 @bp.route("/secret", methods=[HttpMethod.GET])
 def secret():
     return render_template("secret.html")
+
+
+@bp.route('/explore')
+@login_required
+def explore():
+    query = sa.select(Post).order_by(Post.added_at.desc())
+    posts = db.session.scalars(query).all()
+    return render_template('index.html', title='Explore', posts=posts)
+
+
+@bp.route("/users", methods=[HttpMethod.GET])
+def users():
+    users = db.session.scalars(sa.select(User)).all()
+    return render_template("users.html", title="Users", users=users)
