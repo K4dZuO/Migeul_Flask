@@ -5,24 +5,31 @@
 <h1>Hi, {{ current_user.username }}!</h1>
 <div class='post section'>
     {% if form %}
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.post.label }}<br>
-            {{ form.post(cols=64, rows=5) }}<br>
-            {% for error in form.post.errors %}
-            <span class="error">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.post.label }}<br>
+                {{ form.post(cols=64, rows=5) }}<br>
+                {% for error in form.post.errors %}
+                <span class="error">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
     {% endif %}
     <p>Last posts</p>
     {% for post in posts %}
-    <p>
-        {% include "_post.html"%}
-    </p>
+        <p>
+            {% include "_post.html"%}
+        </p>
     {% endfor %}
+
+    {% if prev_url %}
+        <a href="{{ prev_url }}"><< Newer posts</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Older posts >></a>
+    {% endif %}
 </div>
 
 {% endblock %}
