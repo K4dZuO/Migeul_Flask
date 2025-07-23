@@ -50,11 +50,16 @@ class EditProfileForm(FlaskForm):
                 raise ValidationError('Please use a different username.')
     
     def validate_about(self, about: str):
-        print(about.data)
         if about.data != "":
             if helpers.check_profanity(about.data):
                 raise ValidationError('Please, don\'t use censor words.')
     
     
 class FollowForm(FlaskForm):
+    submit = SubmitField('Submit')
+    
+    
+class PostForm(FlaskForm):
+    post = TextAreaField('Post something', 
+                         validators=[DataRequired(), Length(min=1, max=140)])
     submit = SubmitField('Submit')

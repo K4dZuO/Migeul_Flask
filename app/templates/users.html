@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Explore Users</h2>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="userSearch" placeholder="Search by username...">
+  </div>
+
+  <!-- User Cards -->
+  <div class="user-cards" id="userCards">
+    {% for user in users %}
+      <a href="{{ url_for('main.user_profile', username=user.username) }}" class="profile-card">
+        <div class="card-image">
+          <img src="{{ user.avatar(550) }}" alt="Avatar of {{ user.username }}">
+        </div>
+        <div class="card-footer">
+          <p>{{ user.username }}</p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Optional: JS for future search functionality -->
+  <script>
+    const searchInput = document.getElementById('userSearch');
+    const cards = document.getElementById('userCards');
+    const cardList = cards.getElementsByClassName('profile-card');
+
+    searchInput.addEventListener('input', function () {
+      const filter = this.value.toLowerCase();
+
+      Array.from(cardList).forEach(card => {
+        const username = card.querySelector('p').textContent.toLowerCase();
+        card.style.display = username.includes(filter) ? 'block' : 'none';
+      });
+    });
+  </script>
+{% endblock %}

@@ -6,7 +6,7 @@
     <p>The page of user <b>{{user.username}}.</b></p>
     <table>
             <tr><img src="{{ user.avatar(250) }}"></tr>
-            <tr><h2>User: {{ user.username }}</h1></tr>
+            <tr><h2>{{ user.username }}</h1></tr>
 
             {% if user.about %}
                 <tr>About me: {{user.about}}</tr>
@@ -54,13 +54,20 @@
         <p>This user haven't published any posts yet.    
     {% endif %}
     
+    {% if prev_url %}
+        <a href="{{ prev_url }}"><< Newer posts</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Older posts >></a>
+    {% endif %}
+    
     <h3>Comments</h3>
     {% if comments %}
     {% for comment in comments %}
         <div class="unit">{{comment}}</div><br />
         {% endfor%}
     {% else %}
-        <p>This user haven't published any comments yet.    
+        <p>This user hasn't published any comments yet.    
     {% endif %}
 {% else %}
     <div>There's no user with name <b>{{raw_username}}</b></div>

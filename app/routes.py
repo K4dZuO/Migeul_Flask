@@ -5,9 +5,10 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 from app.enums import HttpMethod
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, FollowForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, FollowForm, PostForm
 from app.models import User, Post, Comment
 from app import db
+from config import Config
 
 
 bp = Blueprint('main', __name__)
@@ -20,14 +21,50 @@ def before_request():
         db.session.commit()
 
 
-@bp.route('/', methods=[HttpMethod.GET])
-@bp.route('/index', methods=[HttpMethod.GET])
+@bp.route('/', methods=[HttpMethod.GET, HttpMethod.POST])
+@bp.route('/index', methods=[HttpMethod.GET, HttpMethod.POST])
 @login_required
 def index():
-    posts = db.session.scalars(sa.select(Post).order_by(sa.desc(Post.added_at))).all()
-    return render_template("index.html", title = "Home", posts=posts)
+    post_form = PostForm()
+    if post_form.validate_on_submit():
+        new_post = Post(body=post_form.post.data, author=current_user)
+        db.session.add(new_post)
+        db.session.commit()
+        flash('Your post is now live!')
+        return redirect(url_for('main.index'))
+    page = request.args.get('page', default=1, type=int)
+    posts = db.paginate(current_user.following_posts(), page=page,
+                        per_page=Config.POSTS_PER_PAGE, error_out=False)
+    next_url = url_for('main.index', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('main.index', page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template('index.html', 
+                           title='Home',
+                           form=post_form,
+                           posts=posts.items, 
+                           next_url=next_url,
+                           prev_url=prev_url)
 
 
+@bp.route('/explore')
+@login_required
+def explore():
+    page = request.args.get('page', 1, type=int)
+    query = sa.select(Post).order_by(Post.added_at.desc())
+    posts = db.paginate(query, page=page,
+                        per_page=Config.POSTS_PER_PAGE, error_out=False)
+    next_url = url_for('main.index', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('main.index', page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template('index.html',
+                           title='Explore',
+                           posts=posts.items,
+                           next_url=next_url,
+                           prev_url=prev_url)
+    
+    
 @bp.route('/register', methods=[HttpMethod.GET, HttpMethod.POST])
 def register():
     if current_user.is_authenticated:
@@ -134,18 +171,29 @@ def user_profile(username):
     follow_form = FollowForm()
     asked_user = db.first_or_404(sa.select(User).where(User.username==username))
     if asked_user:
-        posts = db.session.scalars(sa.select(Post).where(Post.user_id == asked_user.id)).all()
+        query = sa.select(Post).where(Post.user_id == asked_user.id)
+        page = request.args.get('page', 1, type=int)
+        posts = db.paginate(query,
+                            page=page,
+                            per_page=Config.POSTS_PER_PAGE,
+                            error_out=False)
+        next_url = url_for('main.user_profile', username=username, page=posts.next_num) if posts.has_next else None
+        prev_url = url_for('main.user_profile', username=username, page=posts.prev_num) if posts.has_prev else None
         comments = db.session.scalars(sa.select(Comment).where(Comment.user_id == asked_user.id)).all()
     else:
         posts = None
         comments = None
+        next_url = None
+        prev_url = None
+
         
     args = {
-        "raw_username": username,
         "user": asked_user,
-        "posts": posts,
+        "posts": posts.items,
         "comments": comments,
-        "follow_form": follow_form
+        "follow_form": follow_form,
+        "next_url": next_url,
+        "prev_url": prev_url
         }
     return render_template('user.html', title="User Page", **args)
 
@@ -153,3 +201,9 @@ def user_profile(username):
 @bp.route("/secret", methods=[HttpMethod.GET])
 def secret():
     return render_template("secret.html")
+
+
+@bp.route("/users", methods=[HttpMethod.GET])
+def users():
+    users = db.session.scalars(sa.select(User)).all()
+    return render_template("users.html", title="Users", users=users)
