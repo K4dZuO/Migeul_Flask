@@ -1,4 +1,7 @@
 <div class='post unit'>
+    <h3>
+        <a href="{{url_for('main.post', post_id=post.id)}}">Post #{{post.id}}</a>
+    </h3>
     <div class='post content'>
         <a href="{{url_for('main.user_profile', username=post.author.username)}}">
             <img src={{post.author.avatar(30)}} />

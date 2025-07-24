@@ -1,44 +1,80 @@
+/* =======================
+   Reset & Base Styles
+   ======================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
 a {
-    text-decoration: none; 
-    color: black;
-
+  text-decoration: none;
+  color: #1a73e8;
 }
 
-.error {
-    color: red;
+a:hover {
+  text-decoration: underline;
 }
 
-.post.section{
-    margin: 0 auto;
-    padding: 0 auto;
-    display: inline-block;
+p {
+  margin-bottom: 8px;
 }
 
-.post.unit{
-    border: solid black 2px;
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 12px;
+  color: #222;
 }
 
-.post.content{
-    align-items: center;
-    display: flex;
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
 }
 
-p.date.date {
-    color: green;
-    margin: 0 auto;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
 
-.menu-bar{
-    display: flex;
-    a {
-    margin-right: 30px;
-    color: black;
-    }
-    a:hover {
-      color: rgb(80, 78, 78)
-    }
+/* =======================
+   Navigation Menu
+   ======================= */
+
+.menu-bar {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin: 20px 0 30px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+.menu-bar a {
+  color: #333;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+
+.menu-bar a:hover {
+  color: #1a73e8;
+}
+
+/* =======================
+   Search Bar
+   ======================= */
 
 .search-bar {
   margin: 20px 0;
@@ -48,45 +84,236 @@ p.date.date {
 
 .search-bar input[type="text"] {
   width: 300px;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
+  padding: 12px;
+  font-size: 1rem;
   border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s;
 }
+
+.search-bar input[type="text"]:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+/* =======================
+   Profile Cards (Explore Page)
+   ======================= */
 
 .user-cards {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-  padding: 0 20px;
+  padding: 10px;
+  margin-top: 20px;
 }
 
 .profile-card {
-  flex: 1 1 calc(20% - 20px); /* 5 per row with gap */
+  flex: 1 1 calc(20% - 20px);
   max-width: calc(20% - 20px);
-  min-width: 80px;
+  min-width: 200px;
   text-decoration: none;
-  color: inherit;
-  background-color: #f9f9f9;
-  border-radius: 8px;
+  background-color: white;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .profile-card:hover {
-  transform: translateY(-5px);
-  transform: translateX(-5px);
+  transform: translate(-3px, -3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .card-image img {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 180px;
+  object-fit: cover;
 }
 
 .card-footer {
-  padding: 10px;
+  padding: 12px;
   text-align: center;
+  font-weight: 500;
+  color: #333;
+  background-color: #fafafa;
+  border-top: 1px solid #eee;
+}
+
+/* =======================
+   Posts
+   ======================= */
+
+.post.unit {
+  background-color: white;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eaeaea;
+}
+
+.post.content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.post.content img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.post.content p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.post.content b a {
+  color: #333;
+  font-weight: 600;
+}
+
+.post.content b a:hover {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.post.body {
+  margin: 8px 0 12px;
+  font-size: 1.05rem;
+  color: #222;
+}
+
+.post.date {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* =======================
+   Comments
+   ======================= */
+
+.comment.unit {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.comment.content {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.comment.content img {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+}
+
+.comment.content p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.4;
+}
+
+.comment.content b a {
+  color: #333;
+  font-weight: 600;
+}
+
+.comment.content b a:hover {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.comment p {
+  margin: 4px 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.comment.date {
+  color: #4a90e2;
+  font-style: italic;
+}
+
+.comment.unit:hover {
+  border-color: #1a73e8;
+  box-shadow: 0 2px 8px rgba(26, 115, 232, 0.15);
+  transition: all 0.2s ease;
+}
+
+/* =======================
+   Forms
+   ======================= */
+
+form {
+  margin: 15px 0;
+}
+
+form input,
+form textarea,
+form button {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+form button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+form button:hover {
+  background-color: #1865d8;
+}
+
+/* =======================
+   Utility Classes
+   ======================= */
+
+.error {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin: 5px 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mt-20 {
+  margin-top: 20px;
 }

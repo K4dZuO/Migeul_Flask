@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 from app.enums import HttpMethod
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, FollowForm, PostForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, FollowForm, PostForm, CommentForm
 from app.models import User, Post, Comment
 from app import db
 from config import Config
@@ -171,7 +171,7 @@ def user_profile(username):
     follow_form = FollowForm()
     asked_user = db.first_or_404(sa.select(User).where(User.username==username))
     if asked_user:
-        query = sa.select(Post).where(Post.user_id == asked_user.id)
+        query = sa.select(Post).where(Post.user_id == asked_user.id).order_by(Post.added_at.desc())
         page = request.args.get('page', 1, type=int)
         posts = db.paginate(query,
                             page=page,
@@ -179,14 +179,14 @@ def user_profile(username):
                             error_out=False)
         next_url = url_for('main.user_profile', username=username, page=posts.next_num) if posts.has_next else None
         prev_url = url_for('main.user_profile', username=username, page=posts.prev_num) if posts.has_prev else None
-        comments = db.session.scalars(sa.select(Comment).where(Comment.user_id == asked_user.id)).all()
+        comments = db.session.scalars(sa.select(Comment).where(Comment.author == asked_user)).all()
     else:
         posts = None
         comments = None
         next_url = None
         prev_url = None
 
-        
+    print(comments)
     args = {
         "user": asked_user,
         "posts": posts.items,
@@ -204,6 +204,45 @@ def secret():
 
 
 @bp.route("/users", methods=[HttpMethod.GET])
+@login_required
 def users():
     users = db.session.scalars(sa.select(User)).all()
     return render_template("users.html", title="Users", users=users)
+
+
+@bp.route("/posts/<post_id>", methods=[HttpMethod.GET, HttpMethod.POST])
+@login_required
+def post(post_id):
+    comment_form = CommentForm()
+    if comment_form.validate_on_submit():
+        new_comment = Comment(body=comment_form.comment.data, 
+                              post_id=post_id, 
+                              author=current_user)
+        print(new_comment)
+        db.session.add(new_comment)
+        db.session.commit()
+        flash('Your comment is published!')
+        return redirect(url_for('main.post',
+                                post_id=post_id))
+    choosed_post = db.first_or_404(sa.select(Post).where(Post.id == post_id))
+    comments = None
+    next_url = None
+    prev_url = None
+    if choosed_post:
+        query = sa.select(Comment).where(Comment.post_id == post_id).order_by(Comment.added_at.desc())
+        page = request.args.get('page', 1, type=int)
+        comments = db.paginate(query,
+                            page=page,
+                            per_page=Config.COMMENTS_PER_PAGE,
+                            error_out=False)
+        next_url = url_for('main.post', post_id=post_id, page=comments.next_num) if comments.has_next else None
+        prev_url = url_for('main.post', post_id=post_id, page=comments.prev_num) if comments.has_prev else None
+ 
+    return render_template("post.html",
+                           form=comment_form,
+                           title = choosed_post.body[:10]+"...",
+                           post=choosed_post,
+                           comments=comments.items,
+                           next_url= next_url,
+                           prev_url= prev_url
+                           )

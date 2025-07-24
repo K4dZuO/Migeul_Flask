@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+{% include "_post.html" %}
+<div class="comment unit">
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.comment.label }}<br>
+            {{ form.comment(cols=64, rows=5) }}<br>
+            {% for error in form.comment.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+</div>
+<br>
+<h2>Comments:</h2>
+{% if comments %}
+    {% for comment in comments %}
+        {% include "_comment.html" %}
+    {% endfor %}
+    {% if prev_url %}
+        <a href="{{ prev_url }}"><< Newer comments</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Older comments >></a>
+    {% endif %}
+{% else %}
+    <p>No one commented yet</p>
+{% endif %}
+
+{% endblock %}
