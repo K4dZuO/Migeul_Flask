@@ -1,0 +1,18 @@
+<div class='comment unit'>
+    <div class='comment content'>
+        <a href="{{url_for('main.user_profile', username=comment.author.username)}}">
+            <img src={{comment.author.avatar(30)}} />
+        </a>
+        <p>
+            <b><a href="{{url_for('main.user_profile', username=current_user.username)}}">
+                {{ comment.author.username }}:</a>
+            </b> {{ comment.body }}
+        </p>
+    </div>
+    {% if not post %}
+    <p class='comment'>Related to
+        <a href="{{url_for('main.post', post_id=comment.post_id)}}">Post №{{comment.post_id}}</a>
+    </p>
+    {% endif%}
+    <p class='comment date'>Posted at {{ comment.added_at.strftime('%d-%m-%Y %H:%M') }}</p>
+</div>
