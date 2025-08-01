@@ -19,10 +19,15 @@
         <span>[{{ error }}]</span>
         {% endfor %}
     </p>
-    <p>
-        {{ form.remember_me.label }} {{form.remember_me()}}
-    </p>
+    <div class="remember-me">
+        <p>
+            {{ form.remember_me.label }} {{form.remember_me()}}
+        </p>
+    </div>
     <p>{{form.submit()}}</p>
+    <p>
+        Forgot Your Password?
+        <a href="{{ url_for('main.reset_password_request') }}">Click to Reset It</a>
     </p>
     <p>New User? <a href="{{ url_for('main.register') }}">Click to Register!</a></p>
 </form>
