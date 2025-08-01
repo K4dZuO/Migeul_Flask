@@ -189,7 +189,6 @@ def user_profile(username):
         next_url = None
         prev_url = None
 
-    print(comments)
     args = {
         "user": asked_user,
         "posts": posts.items,
@@ -221,7 +220,6 @@ def post(post_id):
         new_comment = Comment(body=comment_form.comment.data, 
                               post_id=post_id, 
                               author=current_user)
-        print(new_comment)
         db.session.add(new_comment)
         db.session.commit()
         flash('Your comment is published!')

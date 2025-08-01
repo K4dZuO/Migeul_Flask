@@ -19,10 +19,12 @@
         <span>[{{ error }}]</span>
         {% endfor %}
     </p>
-    <p>
-        {{ form.remember_me.label }} {{form.remember_me()}}
-        <p>{{form.submit()}}</p>
-    </p>
+    <div class="remember-me">
+        <p>
+            {{ form.remember_me.label }} {{form.remember_me()}}
+        </p>
+    </div>
+    <p>{{form.submit()}}</p>
     <p>
         Forgot Your Password?
         <a href="{{ url_for('main.reset_password_request') }}">Click to Reset It</a>
