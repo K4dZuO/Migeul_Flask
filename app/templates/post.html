@@ -23,11 +23,11 @@
     {% for comment in comments %}
         {% include "_comment.html" %}
     {% endfor %}
-    {% if prev_url %}
-        <a href="{{ prev_url }}"><< Newer comments</a>
+    {% if comment_prev_url %}
+        <a href="{{ comment_prev_url }}"><< Newer comments</a>
     {% endif %}
-    {% if next_url %}
-        <a href="{{ next_url }}">Older comments >></a>
+    {% if comment_next_url %}
+        <a href="{{ comment_next_url }}">Older comments >></a>
     {% endif %}
 {% else %}
     <p>No one commented yet</p>

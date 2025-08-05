@@ -174,28 +174,46 @@ def user_profile(username):
     follow_form = FollowForm()
     asked_user = db.first_or_404(sa.select(User).where(User.username==username))
     if asked_user:
-        query = sa.select(Post).where(Post.user_id == asked_user.id).order_by(Post.added_at.desc())
-        page = request.args.get('page', 1, type=int)
-        posts = db.paginate(query,
-                            page=page,
+        post_query = sa.select(Post).where(Post.author == asked_user).order_by(Post.added_at.desc())
+        post_page = request.args.get('post_page', 1, type=int)
+        posts = db.paginate(post_query,
+                            page=post_page,
                             per_page=Config.POSTS_PER_PAGE,
                             error_out=False)
-        next_url = url_for('main.user_profile', username=username, page=posts.next_num) if posts.has_next else None
-        prev_url = url_for('main.user_profile', username=username, page=posts.prev_num) if posts.has_prev else None
-        comments = db.session.scalars(sa.select(Comment).where(Comment.author == asked_user)).all()
+        
+        comment_query = sa.select(Comment).where(Comment.author == asked_user).order_by(Comment.added_at.desc())
+        comment_page = request.args.get('comment_page', 1, type=int)
+        comments = db.paginate(comment_query,
+                            page=comment_page,
+                            per_page=Config.COMMENTS_PER_PAGE,
+                            error_out=False)
+        
+        post_next_url = url_for('main.user_profile', username=username, 
+                                comment_page=comment_page, post_page=posts.next_num) if posts.has_next else None
+        post_prev_url = url_for('main.user_profile', username=username, 
+                                comment_page=comment_page, post_page=posts.prev_num) if posts.has_prev else None
+        comment_next_url = url_for('main.user_profile', username=username, 
+                                post_page=post_page, comment_page=comments.next_num) if comments.has_next else None
+        comment_prev_url = url_for('main.user_profile', username=username, 
+                                post_page=post_page, comment_page=comments.prev_num) if comments.has_prev else None
+        
     else:
         posts = None
+        post_next_url = None
+        post_prev_url = None
         comments = None
-        next_url = None
-        prev_url = None
+        comment_next_url = None
+        comment_prev_url = None
 
     args = {
         "user": asked_user,
-        "posts": posts.items,
-        "comments": comments,
         "follow_form": follow_form,
-        "next_url": next_url,
-        "prev_url": prev_url
+        "posts": posts.items,
+        "post_next_url": post_next_url,
+        "post_prev_url": post_prev_url,
+        "comments": comments.items,
+        "comment_next_url": comment_next_url,
+        "comment_prev_url": comment_prev_url,
         }
     return render_template('user.html', title="User Page", **args)
 
@@ -231,21 +249,21 @@ def post(post_id):
     prev_url = None
     if choosed_post:
         query = sa.select(Comment).where(Comment.post_id == post_id).order_by(Comment.added_at.desc())
-        page = request.args.get('page', 1, type=int)
+        comment_page = request.args.get('comment_page', 1, type=int)
         comments = db.paginate(query,
-                            page=page,
+                            page=comment_page,
                             per_page=Config.COMMENTS_PER_PAGE,
                             error_out=False)
-        next_url = url_for('main.post', post_id=post_id, page=comments.next_num) if comments.has_next else None
-        prev_url = url_for('main.post', post_id=post_id, page=comments.prev_num) if comments.has_prev else None
+        next_url = url_for('main.post', post_id=post_id, comment_page=comments.next_num) if comments.has_next else None
+        prev_url = url_for('main.post', post_id=post_id, comment_page=comments.prev_num) if comments.has_prev else None
  
     return render_template("post.html",
                            form=comment_form,
                            title = choosed_post.body[:10]+"...",
                            post=choosed_post,
+                           comment_next_url= next_url,
+                           comment_prev_url= prev_url,
                            comments=comments.items,
-                           next_url= next_url,
-                           prev_url= prev_url
                            )
     
     

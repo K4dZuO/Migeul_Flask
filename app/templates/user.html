@@ -54,11 +54,11 @@
         <p>This user haven't published any posts yet.    
     {% endif %}
     
-    {% if prev_url %}
-        <a href="{{ prev_url }}"><< Newer posts</a>
+    {% if post_prev_url %}
+        <a href="{{ post_prev_url }}"><< Newer posts</a>
     {% endif %}
-    {% if next_url %}
-        <a href="{{ next_url }}">Older posts >></a>
+    {% if post_next_url %}
+        <a href="{{ post_next_url }}">Older posts >></a>
     {% endif %}
     
     <h3>Comments</h3>
@@ -69,7 +69,17 @@
     {% else %}
         <p>This user hasn't published any comments yet.    
     {% endif %}
+
+    {% if comment_prev_url %}
+        <a href="{{ comment_prev_url }}"><< Newer comments</a>
+    {% endif %}
+    {% if comment_next_url %}
+        <a href="{{ comment_next_url }}">Older comments >></a>
+    {% endif %}
+
 {% else %}
-    <div>There's no user with name <b>{{raw_username}}</b></div>
+    <div>
+        There's no user with name <b>{{raw_username}}</b>
+    </div>
 {% endif%}
 {% endblock%}
