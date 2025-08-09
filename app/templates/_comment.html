@@ -14,5 +14,5 @@
         <a href="{{url_for('main.post', post_id=comment.post_id)}}">Post №{{comment.post_id}}</a>
     </p>
     {% endif%}
-    <p class='comment date'>Posted at {{ comment.added_at.strftime('%d-%m-%Y %H:%M') }}</p>
+    <p class='comment date'>Posted at {{ moment(comment.added_at).fromNow() }}</p>
 </div>

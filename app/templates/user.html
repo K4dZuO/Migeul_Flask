@@ -15,11 +15,11 @@
             {% endif %}
             <br />
 
-            <tr>Registration date: <input type="date" value={{ user.added_at }} readonly /></tr>
+            <tr>Registration date: {{ moment(user.added_at).format('LL')}}</tr>
             <br />
 
             {% if user.last_seen %}
-                <tr>Last seen: {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</tr>
+                <tr>Last seen: {{moment(user.last_seen).format('LLL')}}</tr>
             {% else %}
                <tr>Last seen: No data - {{user.username}} has never logged in.</tr>
             {% endif %}

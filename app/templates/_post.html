@@ -12,5 +12,5 @@
             </b> {{ post.body }}
         </p>
     </div>
-    <p class='post date'>Posted at {{ post.added_at.strftime('%d-%m-%Y %H:%M') }}</p>
+    <p class='post date'>Posted at {{ moment(post.added_at).format('LLL') }}</p>
 </div>

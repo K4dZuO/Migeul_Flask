@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -13,6 +14,7 @@ migrate = Migrate()
 login = LoginManager()
 login.login_view = 'main.login'
 mail = Mail()
+moment = Moment()
 
 
 def create_app():
@@ -23,6 +25,7 @@ def create_app():
     migrate.init_app(app, db)
     login.init_app(app)
     mail.init_app(app)
+    moment.init_app(app)
     
     from app.routes import bp
     from app.errors import register_erros
